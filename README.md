@@ -14,19 +14,24 @@
 
 Proyek ini berada di bidang **Pendidikan**, berfokus pada pembuatan sistem **prediksi performa akademik siswa** menggunakan **machine learning**.
 
+Latar Belakang
+Dalam dunia pendidikan modern, kemampuan untuk mengidentifikasi siswa yang berisiko gagal studi sangat penting agar intervensi dini bisa diberikan. Banyak siswa menghadapi tantangan akademik dan sosial-ekonomi yang memengaruhi performa belajar mereka. Namun, institusi pendidikan seringkali kesulitan mengantisipasi hal ini secara akurat. Oleh karena itu, proyek ini bertujuan membangun sistem prediksi performa akademik siswa berdasarkan data historis mereka, dengan harapan dapat membantu guru dan pihak sekolah membuat keputusan yang lebih tepat sasaran.
+
 ---
 
 ## 🎯 Business Understanding
 
 ### 📝 Problem Statements
 
-- Banyak faktor mempengaruhi kinerja akademik siswa. Tantangan utamanya adalah memprediksi kelulusan siswa berdasarkan data akademik dan sosial-ekonomi.
+- Sulit memprediksi siswa mana yang berisiko tidak lulus tepat waktu.
+- Intervensi sering dilakukan terlambat karena kurangnya data analitik.
+- Faktor-faktor penyebab kegagalan siswa belum diketahui secara pasti.
 
 ### 🎯 Goals
 
-- Membangun model prediksi kelulusan siswa.
-- Membantu pendidik mengambil keputusan intervensi berbasis data.
-- Memahami faktor-faktor utama keberhasilan akademik siswa.
+- Membangun model klasifikasi untuk memprediksi kelulusan siswa.
+- Membantu pendidik mengidentifikasi siswa berisiko secara lebih dini.
+- Menggali fitur-fitur dominan yang memengaruhi hasil belajar.
 
 ### 💡 Solution Statements
 
@@ -47,11 +52,52 @@ Model yang dieksplorasi:
 
 [Link Dataset](https://www.kaggle.com/datasets/larsen0966/student-performance-data-set)
 
+Berikut ini dafar lengkap dan deksripsi semua fitur (33 total)
+
+| Fitur        | Deskripsi                                                                 |
+|--------------|---------------------------------------------------------------------------|
+| school       | Sekolah tempat siswa belajar (GP = Gabriel Pereira, MS = Mousinho da Silveira) |
+| sex          | Jenis kelamin siswa (F = perempuan, M = laki-laki)                        |
+| age          | Usia siswa (15–22 tahun)                                                  |
+| address      | Tipe alamat (U = urban, R = rural)                                        |
+| famsize      | Ukuran keluarga (LE3 = ≤3, GT3 = >3 anggota keluarga)                    |
+| Pstatus      | Status hidup orang tua (T = tinggal bersama, A = terpisah)               |
+| Medu         | Pendidikan ibu (0–4; 0 = tidak sekolah, 4 = pendidikan tinggi)            |
+| Fedu         | Pendidikan ayah (0–4; sama seperti Medu)                                  |
+| Mjob         | Pekerjaan ibu (teacher, health, services, at_home, other)                |
+| Fjob         | Pekerjaan ayah (teacher, health, services, at_home, other)               |
+| reason       | Alasan memilih sekolah (home, reputation, course, other)                 |
+| guardian     | Wali siswa (mother, father, other)                                       |
+| traveltime   | Waktu tempuh ke sekolah (1–4; 1 = <15m, 4 = >1jam)                        |
+| studytime    | Waktu belajar mingguan (1–4; 1 = <2 jam, 4 = >10 jam)                    |
+| failures     | Jumlah ketidaklulusan sebelumnya (0–3)                                    |
+| schoolsup    | Dukungan tambahan dari sekolah (yes/no)                                  |
+| famsup       | Dukungan tambahan dari keluarga (yes/no)                                 |
+| paid         | Les tambahan berbayar untuk mata pelajaran (yes/no)                      |
+| activities   | Kegiatan ekstrakurikuler (yes/no)                                        |
+| nursery      | Apakah siswa pernah ikut taman kanak-kanak (yes/no)                      |
+| higher       | Keinginan melanjutkan pendidikan tinggi (yes/no)                         |
+| internet     | Akses internet di rumah (yes/no)                                         |
+| romantic     | Dalam hubungan romantis (yes/no)                                         |
+| famrel       | Hubungan keluarga (1–5; 5 = sangat baik)                                 |
+| freetime     | Waktu luang setelah sekolah (1–5)                                        |
+| goout        | Frekuensi keluar dengan teman (1–5)                                      |
+| Dalc         | Konsumsi alkohol di hari kerja (1–5)                                     |
+| Walc         | Konsumsi alkohol di akhir pekan (1–5)                                    |
+| health       | Status kesehatan saat ini (1–5)                                          |
+| absences     | Jumlah ketidakhadiran                                                    |
+| G1           | Nilai ujian pertama (0–20)                                               |
+| G2           | Nilai ujian kedua (0–20)                                                 |
+| G3           | Nilai akhir (target) (0–20)                                              |
+
 ### 🗂️ Fitur Utama
 
 Beberapa fitur penting: `sex`, `age`, `studytime`, `failures`, `absences`, `G1`, `G2`, `G3`.
 
 ### 🔍 Exploratory Data Analysis (EDA)
+
+- Heatmap menunjukkan `G1` dan `G2` sangat berkorelasi dengan `G3`, artinya performa masa lalu adalah prediktor utama.
+- Boxplot `absences` menunjukkan siswa dengan absensi ekstrem (terlalu sering bolos) cenderung gagal.
 
 Visualisasi:
 - **Distribusi Target (G3)**:
@@ -76,15 +122,12 @@ Visualisasi:
 
 ### Tahapan Data Preparation:
 
-1. **Encoding Variabel Kategorikal** menggunakan Label Encoding.
-2. **Pemisahan Fitur dan Target**:
-   - Target: `G3`, dikonversi menjadi binary (lulus/tidak lulus).
-3. **Seleksi Fitur**:
-   - Menggunakan fitur signifikan: `G1`, `G2`, `studytime`, `failures`, `absences`, `age`, `sex`.
-4. **Split Data**:
-   - 80% training, 20% testing.
-5. **Feature Scaling**:
-   - StandardScaler untuk SVM dan Logistic Regression.
+1. **Cek missing value & duplikasi** – Tidak ditemukan.
+2. **Drop fitur non-relevan** – Tidak dilakukan karena semua fitur dianalisis.
+3. **Encoding variabel kategorikal** – Menggunakan LabelEncoder untuk kolom seperti `sex`, `school`, dll.
+4. **Feature selection** – Memilih `G1`, `G2`, `studytime`, dsb berdasarkan korelasi dan insight domain.
+5. **Normalisasi fitur numerik** – Menggunakan StandardScaler (khusus untuk SVM dan Logistic Regression).
+6. **Split data** – 80% training dan 20% testing dengan stratifikasi.
 
 ---
 
@@ -92,9 +135,17 @@ Visualisasi:
 
 ### Model yang Dibangun:
 
-- Random Forest Classifier
-- Logistic Regression
-- Support Vector Machine (SVM)
+### Random Forest
+Model ensemble berbasis pohon keputusan. Cocok untuk data tabular.  
+- Parameter: `n_estimators=100`, `max_depth=None`, `random_state=42`.
+
+### Logistic Regression
+Model linier yang memetakan prediksi probabilitas antara 0–1.  
+- Parameter: `solver='liblinear'`, regularisasi default.
+
+### SVM
+Model margin-based yang bekerja optimal di ruang berdimensi tinggi.  
+- Parameter: kernel `'rbf'`, `C=1.0`, `gamma='scale'`.
 
 > 📌 Catatan: Pemilihan model terbaik dijelaskan pada bagian Evaluation.
 
@@ -104,10 +155,16 @@ Visualisasi:
 
 ### Metrik Evaluasi:
 
-- Accuracy
-- Precision
-- Recall
-- F1-Score
+### Keterkaitan Evaluasi dengan Business Understanding
+
+1. **Goal 1: Membangun model akurat**
+   - Random Forest mencapai F1-score > 94% → berhasil.
+
+2. **Goal 2: Membantu pendidik**
+   - Model ini memungkinkan identifikasi awal siswa yang berisiko gagal → mendukung keputusan intervensi.
+
+3. **Goal 3: Mengetahui faktor kunci**
+   - Fitur `G1`, `G2`, dan `failures` menjadi indikator paling penting → dapat menjadi bahan diskusi pengajaran.
 
 ### Hasil Evaluasi Model
 
