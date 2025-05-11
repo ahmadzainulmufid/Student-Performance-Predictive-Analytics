@@ -122,12 +122,14 @@ Visualisasi:
 
 ### Tahapan Data Preparation:
 
-1. **Cek missing value & duplikasi** – Tidak ditemukan.
-2. **Drop fitur non-relevan** – Tidak dilakukan karena semua fitur dianalisis.
-3. **Encoding variabel kategorikal** – Menggunakan LabelEncoder untuk kolom seperti `sex`, `school`, dll.
-4. **Feature selection** – Memilih `G1`, `G2`, `studytime`, dsb berdasarkan korelasi dan insight domain.
-5. **Normalisasi fitur numerik** – Menggunakan StandardScaler (khusus untuk SVM dan Logistic Regression).
-6. **Split data** – 80% training dan 20% testing dengan stratifikasi.
+1. **Cek missing value & duplikasi** – Tidak ditemukan adanya nilai kosong atau duplikat.
+2. **Drop fitur non-relevan** – Tidak dilakukan karena semua fitur dianggap relevan dan digunakan dalam analisis.
+3. **Feature selection** – Memilih subset fitur seperti `sex`, `age`, `studytime`, `G1`, `G2`, `G3`, dsb dari dataset asli.
+4. **Membuat label target `pass`** – Mengubah kolom `G3` menjadi label biner: jika `G3 >= 10` maka `pass = 1`, jika tidak maka `pass = 0`.
+5. **Drop kolom `G3`** – Karena nilai `G3` sudah dipakai untuk membuat label, maka kolom ini dihapus dari fitur.
+6. **Encoding variabel kategorikal** – Menggunakan `LabelEncoder` untuk kolom bertipe objek seperti `sex`, `school`, `internet`, dll.
+7. **Split data** – Data dibagi menjadi 80% data latih dan 20% data uji menggunakan stratifikasi berdasarkan label `pass`.
+8. **Normalisasi fitur numerik** – Menggunakan `StandardScaler` agar fitur numerik memiliki distribusi yang seragam.
 
 ---
 
